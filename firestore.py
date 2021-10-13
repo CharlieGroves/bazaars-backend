@@ -8,8 +8,19 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
-users_ref = db.collection(u'users')
-docs = users_ref.stream()
+def getAllUsers():
+    users = []
+    users_ref = db.collection('users')
+    all_users = users_ref.stream()
+    for user in all_users:
+        users.append(user.to_dict())
+    return (users)
 
-for doc in docs:
-    print(f'{doc.id} => {doc.to_dict()}')
+def getUser(uid):
+    user_ref = db.collection('users').document(uid)
+    user = user_ref.get()
+    return (user.to_dict())
+
+getUser("QMKon2v385TLlFwkxGgzc0Il7x52")
+
+#getUsers()
