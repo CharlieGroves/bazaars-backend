@@ -21,6 +21,18 @@ def getUser(uid):
     user = user_ref.get()
     return (user.to_dict())
 
+def makeShop(user_id, shop_name):
+    shop_ref = db.collection('shops').document(shop_name)
+    shop = shop_ref.get()
+    if shop.exists:
+        raise Exception("Shop already exists")
+    data = {
+        "shop_name": shop_name,
+        "owner_id": user_id,
+    }
+    shop_ref.set(data)
+    return 
+
 getUser("QMKon2v385TLlFwkxGgzc0Il7x52")
 
 #getUsers()
