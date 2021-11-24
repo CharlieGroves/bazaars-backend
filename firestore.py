@@ -95,7 +95,7 @@ def createUser(id, username, url, photoURL, createdAt, admin):
     return user_ref.set(data)
 
 # create a new item in a shop
-def createNewItem(itemName, itemPrice, itemImageURL, shopName, createdAt, staffId, tags):
+def createNewItem(itemName, itemPrice, itemImageURL, shopName, createdAt, staffId, tags, category):
     item_ref = db.collection('items').document(itemName)
     item = {
         "itemName": itemName, 
@@ -105,6 +105,7 @@ def createNewItem(itemName, itemPrice, itemImageURL, shopName, createdAt, staffI
         "createdAt": createdAt,
         "staffId": staffId,
         "tags": tags,
+        "category": category,
     }
     return item_ref.set(item)
 
@@ -117,3 +118,13 @@ def getItems(shop_name):
         print(item.to_dict())
         items.append(item.to_dict())
     return (items)
+
+# get all items
+def getAllItems():
+    items = []
+    items_ref = db.collection('items')
+    all_items = items_ref.stream()
+    for item in all_items:
+        items.append(item.to_dict())
+    return (items)
+    
