@@ -13,6 +13,8 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # get all users from the database
+
+
 def getAllUsers():
     # set user arrary to empty
     users = []
@@ -28,6 +30,8 @@ def getAllUsers():
     return (users)
 
 # get a single user from their id
+
+
 def getUser(uid):
     # create reference to that user in the database
     user_ref = db.collection('users').document(uid)
@@ -37,6 +41,8 @@ def getUser(uid):
     return (user.to_dict())
 
 # make a new shop
+
+
 def makeShop(user_id, shop_name, shop_description, createdAt):
     # create reference to the shop in the database
     shop_ref = db.collection('shops').document(shop_name)
@@ -57,12 +63,16 @@ def makeShop(user_id, shop_name, shop_description, createdAt):
     return shop_ref.set(data)
 
 # get information about a shop with its name (which is unique)
+
+
 def getShopWithName(shop_name):
     shop_ref = db.collection('shops').document(shop_name)
     shop = shop_ref.get()
     return (shop.to_dict())
 
 # get all shops one manager owns using their id
+
+
 def getShopsWithId(id):
     shops = []
     shops_ref = db.collection('shops').where('owner_id', '==', id)
@@ -72,6 +82,8 @@ def getShopsWithId(id):
     return (shops)
 
 # get all shops in the database
+
+
 def getAllShops():
     shops = []
     shops_ref = db.collection('shops')
@@ -81,6 +93,8 @@ def getAllShops():
     return (shops)
 
 # create a user
+
+
 def createUser(id, username, url, photoURL, createdAt, admin):
     user_ref = db.collection('users').document(id)
     data = {
@@ -95,21 +109,27 @@ def createUser(id, username, url, photoURL, createdAt, admin):
     return user_ref.set(data)
 
 # create a new item in a shop
-def createNewItem(itemName, itemPrice, itemImageURL, shopName, createdAt, staffId, tags, category):
+
+
+def createNewItem(itemName, itemPrice, itemDescription, itemImageURL, shopName, createdAt, staffId, tags, category, sellerId):
     item_ref = db.collection('items').document(itemName)
     item = {
-        "itemName": itemName, 
+        "itemName": itemName,
         "itemPrice": itemPrice,
+        "itemDescription": itemDescription,
         "itemImageURL": itemImageURL,
         "shopName": shopName,
         "createdAt": createdAt,
         "staffId": staffId,
         "tags": tags,
         "category": category,
+        "sellerId": sellerId,
     }
     return item_ref.set(item)
 
 # get all items in a shop from the shop name (which is unique)
+
+
 def getItems(shop_name):
     items = []
     items_ref = db.collection('items').where("shopName", "==", shop_name)
@@ -127,4 +147,12 @@ def getAllItems():
     for item in all_items:
         items.append(item.to_dict())
     return (items)
-    
+
+# get a single item
+def getItem(item_id):
+    item_ref = db.collection('items').document(item_id)
+    print(item_ref)
+    item = item_ref.get()
+    print(item.to_dict())
+    return (item.to_dict())
+
