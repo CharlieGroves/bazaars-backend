@@ -113,6 +113,8 @@ def makeItemRoute():
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 
+
+
 @app.route('/get/item/<shop_name>', methods=['GET'])
 # get a shop from its id
 def getItemsRoute(shop_name):
