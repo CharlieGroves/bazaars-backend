@@ -139,4 +139,12 @@ def getItem(item_id):
     return (item.to_dict())
 
 def searchForItems(query):
-    item_ref = db.collection('items').where("tags")
+    print(query)
+    items_ref = db.collection('items').where("tags", "array_contains_any", [query])
+    items = []
+    all_items = items_ref.stream()
+    for item in all_items:
+        items.append(item.to_dict())
+    return (items)
+
+    

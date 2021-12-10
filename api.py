@@ -10,7 +10,7 @@ from flask_cors import CORS
 import json
 
 # import my own functions from firestore.py
-from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem
+from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems
 
 
 # initilise the app
