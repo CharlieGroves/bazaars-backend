@@ -10,7 +10,7 @@ from flask_cors import CORS
 import json
 
 # import my own functions from firestore.py
-from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems
+from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem
 
 
 # initilise the app
@@ -100,20 +100,20 @@ def makeItemRoute():
 
     itemName = data["itemName"]
     itemPrice = data["itemPrice"]
+    itemDescription= data["itemDescription"]
     itemImageURL = data["itemImageURL"]
     shopName = data["shopName"]
     createdAt = data["createdAt"]
     staffId = data["staffId"]
     tags = data["tags"]
     category = data["category"]
+    sellerId = data["staffId"]
 
-    createNewItem(itemName, itemPrice, itemImageURL,
-                  shopName, createdAt, staffId, tags, category)
+
+    createNewItem(itemName, itemPrice, itemDescription, itemImageURL,
+                  shopName, createdAt, staffId, tags, category, sellerId)
 
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
-
-
 
 @app.route('/get/item/<shop_name>', methods=['GET'])
 # get a shop from its id
@@ -126,6 +126,20 @@ def getItemsRoute(shop_name):
 def getAllItemsRoute():
     items = getAllItems()
     return jsonify(items)
+
+@app.route('/get/single-item/<item_id>', methods=['GET'])
+# get information about a single item
+def getSingleItemRoute(item_id):
+    print([item_id])
+    item = getItem(item_id)
+    return jsonify(item)
+
+@app.route('/get/search/item/<query>')
+# get items from the database based on whether they satisfy the query
+def searchForItemsRoute(query):
+    data = searchForItems(query)
+    return jsonify(data)
+
 
 # if file is file being run
 if __name__ == '__main__':

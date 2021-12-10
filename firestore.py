@@ -95,17 +95,19 @@ def createUser(id, username, url, photoURL, createdAt, admin):
     return user_ref.set(data)
 
 # create a new item in a shop
-def createNewItem(itemName, itemPrice, itemImageURL, shopName, createdAt, staffId, tags, category):
+def createNewItem(itemName, itemPrice, itemDescription, itemImageURL, shopName, createdAt, staffId, tags, category, sellerId):
     item_ref = db.collection('items').document(itemName)
     item = {
-        "itemName": itemName, 
+        "itemName": itemName,
         "itemPrice": itemPrice,
+        "itemDescription": itemDescription,
         "itemImageURL": itemImageURL,
         "shopName": shopName,
         "createdAt": createdAt,
         "staffId": staffId,
         "tags": tags,
         "category": category,
+        "sellerId": sellerId,
     }
     return item_ref.set(item)
 
@@ -127,6 +129,14 @@ def getAllItems():
     for item in all_items:
         items.append(item.to_dict())
     return (items)
-    
 
-    
+# get a single item
+def getItem(item_id):
+    item_ref = db.collection('items').document(item_id)
+    print(item_ref)
+    item = item_ref.get()
+    print(item.to_dict())
+    return (item.to_dict())
+
+def searchForItems(query):
+    item_ref = db.collection('items').where("tags")
