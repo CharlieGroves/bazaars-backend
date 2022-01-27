@@ -13,6 +13,8 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # get all users from the database
+
+
 def getAllUsers():
     # set user arrary to empty
     users = []
@@ -28,6 +30,8 @@ def getAllUsers():
     return (users)
 
 # get a single user from their id
+
+
 def getUser(uid):
     # create reference to that user in the database
     user_ref = db.collection('users').document(uid)
@@ -37,6 +41,8 @@ def getUser(uid):
     return (user.to_dict())
 
 # make a new shop
+
+
 def makeShop(user_id, shop_name, shop_description, createdAt):
     # create reference to the shop in the database
     shop_ref = db.collection('shops').document(shop_name)
@@ -57,12 +63,16 @@ def makeShop(user_id, shop_name, shop_description, createdAt):
     return shop_ref.set(data)
 
 # get information about a shop with its name (which is unique)
+
+
 def getShopWithName(shop_name):
     shop_ref = db.collection('shops').document(shop_name)
     shop = shop_ref.get()
     return (shop.to_dict())
 
 # get all shops one manager owns using their id
+
+
 def getShopsWithId(id):
     shops = []
     shops_ref = db.collection('shops').where('owner_id', '==', id)
@@ -72,6 +82,8 @@ def getShopsWithId(id):
     return (shops)
 
 # get all shops in the database
+
+
 def getAllShops():
     shops = []
     shops_ref = db.collection('shops')
@@ -81,10 +93,12 @@ def getAllShops():
     return (shops)
 
 # create a user
-def createUser(id, username, url, photoURL, createdAt, admin):
-    user_ref = db.collection('users').document(id)
+
+
+def createUser(uid, username, url, photoURL, createdAt, admin):
+    user_ref = db.collection('users').document(uid)
     data = {
-        "id": id,
+        "id": uid,
         "username": username,
         "url": url,
         "photoURL": photoURL,
@@ -95,6 +109,8 @@ def createUser(id, username, url, photoURL, createdAt, admin):
     return user_ref.set(data)
 
 # create a new item in a shop
+
+
 def createNewItem(itemName, itemPrice, itemDescription, itemImageURL, shopName, createdAt, staffId, tags, category, sellerId):
     item_ref = db.collection('items').document(itemName)
     item = {
@@ -112,6 +128,8 @@ def createNewItem(itemName, itemPrice, itemDescription, itemImageURL, shopName, 
     return item_ref.set(item)
 
 # get all items in a shop from the shop name (which is unique)
+
+
 def getItems(shop_name):
     items = []
     items_ref = db.collection('items').where("shopName", "==", shop_name)
@@ -122,6 +140,8 @@ def getItems(shop_name):
     return (items)
 
 # get all items
+
+
 def getAllItems():
     items = []
     items_ref = db.collection('items')
@@ -131,6 +151,8 @@ def getAllItems():
     return (items)
 
 # get a single item
+
+
 def getItem(item_id):
     item_ref = db.collection('items').document(item_id)
     print(item_ref)
@@ -138,13 +160,82 @@ def getItem(item_id):
     print(item.to_dict())
     return (item.to_dict())
 
+
 def searchForItems(query):
     print(query)
-    items_ref = db.collection('items').where("tags", "array_contains_any", [query])
+    items_ref = db.collection('items').where(
+        "tags", "array_contains_any", [query])
     items = []
     all_items = items_ref.stream()
     for item in all_items:
         items.append(item.to_dict())
     return (items)
 
-    
+
+def createNewReview(ReviewTitle, ReviewText, ReviewRating, UserID, ProductID,):
+    # reference to item reviews in database
+    review_ref = db.collection('items').document(
+        ProductID).collection('reviews')
+    # creating review object to add to review_ref
+    review = {
+        "ReviewTitle": ReviewTitle,
+        "ReviewText": ReviewText,
+        "ReviewRating": ReviewRating,
+        "UserID": UserID,
+        "ProductID": ProductID,
+    }
+    # adding review object to review_ref
+    review_ref.add(review)
+    # once it has been added, pull down all reviews for the product
+    reviews = review_ref.stream()
+    # define variables to be used to calculate mean rating
+    ratings = 0
+    all_reviews = []
+    r_counter = 0
+
+    # for every reference to a review in all reviews, pull down the actual data
+    # and increment the counter
+    for r in reviews:
+        all_reviews.append(r.to_dict())
+        r_counter += 1
+
+    # now add up all of the ratings
+    for rate in all_reviews:
+        ratings += (rate["ReviewRating"])
+
+    # divide the total rating by the number of ratings to get the mean average
+    mean_rating = ratings/r_counter
+
+    # add this information to the database on the item document
+    db.collection('items').document(ProductID).set({
+        "MeanRating": mean_rating,
+    }, merge=True)
+
+
+def getReviewsForItem(ProductID):
+    reviews_ref = db.collection('items').document(
+        ProductID).collection('reviews')
+    reviews = []
+    all_reviews = reviews_ref.stream()
+    for review in all_reviews:
+        reviews.append(review.to_dict())
+    return (reviews)
+
+
+def updateShoppingCart(user_id, cart):
+    # update a shopping cart
+    shoppingCart_ref = db.collection('users').document(user_id)
+    print(cart)
+    shoppingCart_ref.set({
+        "cart": cart,
+    }, merge=True)
+    return
+
+
+def getShoppingCart(user_id):
+    # get a shopping cart
+    shoppingCart_ref = db.collection('users').document(user_id)
+    user = shoppingCart_ref.get()
+    user_data = user.to_dict()
+    cart = user_data["cart"]
+    return cart
