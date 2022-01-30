@@ -239,3 +239,12 @@ def getShoppingCart(user_id):
     user_data = user.to_dict()
     cart = user_data["cart"]
     return cart
+
+def get30Items():
+    items = []
+    items_ref = items_ref = db.collection('items')
+    query = items_ref.order_by("createdAt").limit_to_last(30)
+    all_items = query.get()
+    for item in all_items:
+        items.append(item.to_dict())
+    return items

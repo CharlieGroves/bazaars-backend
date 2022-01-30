@@ -10,7 +10,7 @@ from flask_cors import CORS
 import json
 
 # import my own functions from firestore.py
-from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems, createNewReview, getReviewsForItem, updateShoppingCart, getShoppingCart       
+from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems, createNewReview, getReviewsForItem, updateShoppingCart, getShoppingCart, get30Items 
 
 
 # initilise the app
@@ -188,6 +188,12 @@ def updateShoppingCartRoute(user_id):
 def getShoppingCartRoute(user_id):
     cart = getShoppingCart(user_id)
     return jsonify(cart)
+
+@app.route('/get/30/items')
+# get top 30 items
+def get30ItemsRoute():
+    items = get30Items()
+    return jsonify(items)
 
 # if file is file being run
 if __name__ == '__main__':
