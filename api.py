@@ -177,11 +177,7 @@ def getReviewsForItemRoute(item_id):
 # update a shopping cart
 def updateShoppingCartRoute(user_id):
     data = request.get_json()
-    print(data)
-    print(jsonify(data))
-    cart = data
-    print(cart)
-    updateShoppingCart(user_id, cart)
+    updateShoppingCart(user_id, data)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 @app.route('/get/shoppingCart/<user_id>')
