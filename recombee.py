@@ -10,61 +10,63 @@ client = RecombeeClient('charlie-groves-dev', private_token)
 
 df = pd.read_csv('dataset.csv',nrows=835,encoding="ISO-8859-1")
 
-for x in range (0,834):
-    itemName = df["itemName"][x]
-    itemPrice = df["itemPrice"][x]
-    itemDescription = df["itemDescription"][x]
-    itemImageURL = df["itemImageURL"][x]
-    shopName = df["sellerId"][x]
-    createdAt = int(time.time())
-    staffId = df["sellerId"][x]
-    tags = df["tags"][x]
-    category = df["category"][x]
-    sellerId = df["sellerId"][x]
-    MeanRating = df["MeanRating"][x]
+client.send(AddUser("id"))
 
-    problem_chars = [" ", "'", ",", "(", ")", "*", "+", "&", "â", "¢", ";", "[", "]", "!", "Â", "®", "~", "€", "±", "â",]
+# for x in range (0,834):
+#     itemName = df["itemName"][x]
+#     itemPrice = df["itemPrice"][x]
+#     itemDescription = df["itemDescription"][x]
+#     itemImageURL = df["itemImageURL"][x]
+#     shopName = df["sellerId"][x]
+#     createdAt = int(time.time())
+#     staffId = df["sellerId"][x]
+#     tags = df["tags"][x]
+#     category = df["category"][x]
+#     sellerId = df["sellerId"][x]
+#     MeanRating = df["MeanRating"][x]
 
-    itemNameSanitised = itemName
+#     problem_chars = [" ", "'", ",", "(", ")", "*", "+", "&", "â", "¢", ";", "[", "]", "!", "Â", "®", "~", "€", "±", "â",]
 
-    for char in problem_chars:
-      itemNameSanitised.replace(char, "")
+#     itemNameSanitised = itemName
 
-    itemNameSanitised = itemName.replace(" ", "")
-    itemNameSanitised = itemNameSanitised.replace("'", "")
-    itemNameSanitised = itemNameSanitised.replace(",", "")
-    itemNameSanitised = itemNameSanitised.replace("(", "")
-    itemNameSanitised = itemNameSanitised.replace(")" ,"")
-    itemNameSanitised = itemNameSanitised.replace("*" ,"")
-    itemNameSanitised = itemNameSanitised.replace("+" ,"")
-    itemNameSanitised = itemNameSanitised.replace("&" ,"")
-    itemNameSanitised = itemNameSanitised.replace("â" ,"")
-    itemNameSanitised = itemNameSanitised.replace("¢" ,"")
-    itemNameSanitised = itemNameSanitised.replace(";" ,"")
-    itemNameSanitised = itemNameSanitised.replace("[" ,"")
-    itemNameSanitised = itemNameSanitised.replace("]","")
-    itemNameSanitised = itemNameSanitised.replace("!","")
-    itemNameSanitised = itemNameSanitised.replace("Â","")
-    itemNameSanitised = itemNameSanitised.replace("®","")
-    itemNameSanitised = itemNameSanitised.replace("~","")
-    itemNameSanitised = itemNameSanitised.replace("€","")
-    itemNameSanitised = itemNameSanitised.replace("±","")
-    itemNameSanitised = itemNameSanitised.replace("â","")
+#     for char in problem_chars:
+#       itemNameSanitised.replace(char, "")
+
+#     itemNameSanitised = itemName.replace(" ", "")
+#     itemNameSanitised = itemNameSanitised.replace("'", "")
+#     itemNameSanitised = itemNameSanitised.replace(",", "")
+#     itemNameSanitised = itemNameSanitised.replace("(", "")
+#     itemNameSanitised = itemNameSanitised.replace(")" ,"")
+#     itemNameSanitised = itemNameSanitised.replace("*" ,"")
+#     itemNameSanitised = itemNameSanitised.replace("+" ,"")
+#     itemNameSanitised = itemNameSanitised.replace("&" ,"")
+#     itemNameSanitised = itemNameSanitised.replace("â" ,"")
+#     itemNameSanitised = itemNameSanitised.replace("¢" ,"")
+#     itemNameSanitised = itemNameSanitised.replace(";" ,"")
+#     itemNameSanitised = itemNameSanitised.replace("[" ,"")
+#     itemNameSanitised = itemNameSanitised.replace("]","")
+#     itemNameSanitised = itemNameSanitised.replace("!","")
+#     itemNameSanitised = itemNameSanitised.replace("Â","")
+#     itemNameSanitised = itemNameSanitised.replace("®","")
+#     itemNameSanitised = itemNameSanitised.replace("~","")
+#     itemNameSanitised = itemNameSanitised.replace("€","")
+#     itemNameSanitised = itemNameSanitised.replace("±","")
+#     itemNameSanitised = itemNameSanitised.replace("â","")
     
-    client.send(SetItemValues(itemNameSanitised,
-        {
-          "MeanRating": int(MeanRating),
-          "category": category,
-          "createdAt": createdAt,
-          "itemDescription": itemDescription,
-          "itemImageURL": itemImageURL,
-          "itemName": itemName,
-          "itemPrice": int(itemPrice),
-          "sellerId": sellerId,
-          "staffId": staffId,
-          "tags": tags,
-        },
-        cascade_create=True
-    ))
+#     client.send(SetItemValues(itemNameSanitised,
+#         {
+#           "MeanRating": int(MeanRating),
+#           "category": category,
+#           "createdAt": createdAt,
+#           "itemDescription": itemDescription,
+#           "itemImageURL": itemImageURL,
+#           "itemName": itemName,
+#           "itemPrice": int(itemPrice),
+#           "sellerId": sellerId,
+#           "staffId": staffId,
+#           "tags": tags,
+#         },
+#         cascade_create=True
+#     ))
 
-    print("Item " ,x, " added")
+#     print("Item " ,x, " added")

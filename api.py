@@ -11,7 +11,7 @@ import json
 
 # import my own functions from firestore.py
 from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems, createNewReview, getReviewsForItem, updateShoppingCart, getShoppingCart, get30Items 
-from recombee_recommend import recommendItemItem
+from recombee_recommend import recommendItemHomepage, recommendItemItem
 
 
 # initilise the app
@@ -199,7 +199,12 @@ def recommendItemItemRoute():
     item = data["itemName"]
     recommendations = recommendItemItem(item)
     return(jsonify(recommendations))
-    
+
+@app.route('/recommend/welcome', methods=['GET'])
+# get items for homepage
+def recommendItemHomepageRoute():
+    recommendations = recommendItemHomepage()
+    return(jsonify(recommendations))
 
 # if file is file being run
 if __name__ == '__main__':
