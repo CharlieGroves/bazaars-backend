@@ -2,6 +2,7 @@
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from datetime import datetime
 
 # use a service account to have uninterrupted access to database
 cred = credentials.Certificate(
@@ -248,3 +249,37 @@ def get30Items():
     for item in all_items:
         items.append(item.to_dict())
     return items
+
+def itemSale(shop_id, item_id):
+
+    shop_sales = 0
+    shop_data = getShopWithName(shop_id)
+    currentMonth = str(datetime.now().month)
+    shop_ref = db.collection('shops').document(shop_id)
+
+    print(shop_data)
+
+    if("sales" in shop_data):
+        shop_sales = shop_data["sales"][currentMonth]
+
+ 
+    shop_ref.set({
+        "sales": {
+            currentMonth: shop_sales + 1
+        }
+    }, merge=True)
+
+    item_sales = 0
+    item_ref = db.collection('items').document(item_id)
+    item_data_promise = item_ref.get()
+    item_data = item_data_promise.to_dict()
+    print(item_data)
+
+    if("sales" in item_data):
+        item_sales = item_data["sales"][currentMonth]
+
+    item_ref.set({
+        "sales": {
+            currentMonth: item_sales + 1
+        }
+    }, merge=True)
