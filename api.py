@@ -10,7 +10,7 @@ from flask_cors import CORS
 import json
 
 # import my own functions from firestore.py
-from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems, createNewReview, getReviewsForItem, updateShoppingCart, getShoppingCart, get30Items , itemSale
+from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems, createNewReview, getReviewsForItem, updateShoppingCart, getShoppingCart, get30Items , itemSale, bestItem, worstItem
 from recombee_recommend import recommendItemHomepage, recommendItemItem
 
 
@@ -212,6 +212,17 @@ def itemSaleRoute(shop_id, item_id):
     itemSale(shop_id, item_id)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
+@app.route('/get/best/<shop_id>', methods=["GET"])
+# get the best performing item from a shop
+def bestItemRoute(shop_id):
+    item = bestItem(shop_id)
+    return(jsonify(item))
+
+@app.route('/get/worst/<shop_id>', methods=["GET"])
+# get the worst performing item from a shop
+def worstItemRoute(shop_id):
+    item = worstItem(shop_id)
+    return(jsonify(item))
 
 # if file is file being run
 if __name__ == '__main__':

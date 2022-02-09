@@ -241,6 +241,7 @@ def getShoppingCart(user_id):
     cart = user_data["cart"]
     return cart
 
+
 def get30Items():
     items = []
     items_ref = items_ref = db.collection('items')
@@ -250,36 +251,64 @@ def get30Items():
         items.append(item.to_dict())
     return items
 
-def itemSale(shop_id, item_id):
 
+def itemSale(shop_id, item_id):
+    # initilise variables
+    item_sales = 0 
     shop_sales = 0
+    shop_sales_revenue = 0
+
+    # get shop data and item data using functions I wrote earlier
+    item_data = getItem(item_id)
     shop_data = getShopWithName(shop_id)
-    currentMonth = str(datetime.now().month)
+
+    # define a reference to the shop and the item in the database
+    item_ref = db.collection('items').document(item_id)
     shop_ref = db.collection('shops').document(shop_id)
 
-    print(shop_data)
+    # get the current month as a number in a string
+    currentMonth = str(datetime.now().month)
 
+    # if the item/shop has had sales, update the variables
     if("sales" in shop_data):
         shop_sales = shop_data["sales"][currentMonth]
 
- 
-    shop_ref.set({
-        "sales": {
-            currentMonth: shop_sales + 1
-        }
-    }, merge=True)
-
-    item_sales = 0
-    item_ref = db.collection('items').document(item_id)
-    item_data_promise = item_ref.get()
-    item_data = item_data_promise.to_dict()
-    print(item_data)
+    if("sales_revenue" in shop_data):
+        shop_sales_revenue = shop_data["sales_revenue"][currentMonth]
 
     if("sales" in item_data):
         item_sales = item_data["sales"][currentMonth]
+
+    # update information in database
+    shop_ref.set({
+        "sales": {
+            currentMonth: shop_sales + 1
+        },
+        "sales_revenue": {
+            currentMonth: shop_sales_revenue + item_data["itemPrice"]
+        }
+    }, merge=True)
 
     item_ref.set({
         "sales": {
             currentMonth: item_sales + 1
         }
     }, merge=True)
+
+def bestItem(shop_id):
+    items = []
+    items_ref = db.collection('items').where("shopName", "==", shop_id).order_by('sales').limit_to_last(1)
+    all_items = items_ref.get()
+    for item in all_items:
+        items.append(item.to_dict())
+        print(item.to_dict())
+    return items
+
+def worstItem(shop_id):
+    items = []
+    items_ref = db.collection('items').where("shopName", "==", shop_id).order_by('sales', direction=firestore.Query.DESCENDING).limit_to_last(1)
+    all_items = items_ref.get()
+    for item in all_items:
+        items.append(item.to_dict())
+        print(item.to_dict())
+    return items
