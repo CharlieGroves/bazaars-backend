@@ -297,12 +297,12 @@ def itemSale(shop_id, item_id):
 
 def bestItem(shop_id):
     items = []
-    items_ref = db.collection('items').where("shopName", "==", shop_id).order_by('sales').limit_to_last(1)
+    items_ref = db.collection('items').where("shopName", "==", shop_id).order_by('sales', direction=firestore.Query.ASCENDING)
     all_items = items_ref.get()
     for item in all_items:
         items.append(item.to_dict())
-        print(item.to_dict())
-    return items
+    print(items[1])
+    return items[1]
 
 def worstItem(shop_id):
     items = []
@@ -310,5 +310,4 @@ def worstItem(shop_id):
     all_items = items_ref.get()
     for item in all_items:
         items.append(item.to_dict())
-        print(item.to_dict())
     return items
