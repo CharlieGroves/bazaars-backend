@@ -1,8 +1,11 @@
 # import database management and authentication modules
+from emails import sendRecommendationEmail
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from datetime import datetime
+
+from recombee_recommend import recommendUser
 
 # use a service account to have uninterrupted access to database
 cred = credentials.Certificate(
@@ -311,3 +314,33 @@ def worstItem(shop_id):
     for item in all_items:
         items.append(item.to_dict())
     return items
+
+def itemPurchase(user_id, item_id, shop_id):
+    sales_ref = db.collection('sales')
+    sales_ref.add({
+        "shop": shop_id,
+        "item": item_id,
+        "user": user_id
+    })
+
+def getSalesFromShop(shop_id):
+    sales = []
+    sales_ref = db.collection('sales').where("shop", "==", shop_id)
+    all_sales = sales_ref.get()
+    for sale in all_sales:
+        sales.append(sale.to_dict())
+    return sales
+
+def recommendShop(shop_id, percentage):
+    sales = getSalesFromShop(shop_id)
+    for sale in sales:
+        user = sale["user"]
+        # create reference to that user in the database
+        user_ref = db.collection('users').document(user)
+        # get the data in this document
+        user = user_ref.get()
+        # return the user
+        user_info = user.to_dict()
+        print(user_info)
+        item = recommendUser(user)
+        sendRecommendationEmail("charlie.groves@coopersschool.com", item, percentage)

@@ -1,4 +1,5 @@
 # import the api library
+from crypt import methods
 import flask
 # import some specific functions from the api library
 from flask import jsonify, request
@@ -10,8 +11,8 @@ from flask_cors import CORS
 import json
 
 # import my own functions from firestore.py
-from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems, createNewReview, getReviewsForItem, updateShoppingCart, getShoppingCart, get30Items , itemSale, bestItem, worstItem
-from recombee_recommend import recommendItemHomepage, recommendItemItem
+from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems, createNewReview, getReviewsForItem, updateShoppingCart, getShoppingCart, get30Items , itemSale, bestItem, worstItem, itemPurchase, recommendShop
+from recombee_recommend import recommendItemHomepage, recommendItemItem, userItemInteraction, recommendUser
 
 
 # initilise the app
@@ -223,6 +224,29 @@ def bestItemRoute(shop_id):
 def worstItemRoute(shop_id):
     item = worstItem(shop_id)
     return(jsonify(item))
+
+@app.route('/post/item/interaction/<user_id>/<item_id>', methods=["POST"])
+# add an interaction between a user and a product
+def userItemInteractionRoute(user_id, item_id):
+    userItemInteraction(user_id, item_id)
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+@app.route('/get/recommend/<user_id>', methods=['GET'])
+# get a recommendation for a user
+def recommendUserRoute(user_id):
+    item = recommendUser(user_id)
+    return jsonify(item)
+
+@app.route('/post/item/purchase/<user_id>/<item_id>/<shop_id>', methods=["POST"])
+# record an item sale
+def itemPurchaseRoute(user_id, item_id, shop_id):
+    itemPurchase(user_id, item_id, shop_id)
+
+@app.route('/post/recommend/shop/<shop_id>/<percentage>', methods=["POST"])
+# send recommendation emails for a whole shop
+def recommendShopRoute(shop_id, percentage):
+    recommendShop(shop_id, percentage)
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 # if file is file being run
 if __name__ == '__main__':

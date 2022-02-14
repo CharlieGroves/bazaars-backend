@@ -5,7 +5,7 @@ private_token = "fV0h1ZTMpkULxiUBBFVndsqHMhfIHc8kBDts0kJJcbjrvMLcBpfDVZx8LxAAYt9
 
 client = RecombeeClient('charlie-groves-dev', private_token)
 
-def recommendItemItem(itemName):
+def sanitiseItemName(itemName):
     itemNameSanitised = itemName.replace(" ", "")
     itemNameSanitised = itemNameSanitised.replace("'", "")
     itemNameSanitised = itemNameSanitised.replace(",", "")
@@ -26,14 +26,25 @@ def recommendItemItem(itemName):
     itemNameSanitised = itemNameSanitised.replace("€","")
     itemNameSanitised = itemNameSanitised.replace("±","")
     itemNameSanitised = itemNameSanitised.replace("â","")
+    return itemNameSanitised
 
-    print(itemNameSanitised)
 
+def recommendItemItem(itemName):
+    itemNameSanitised = sanitiseItemName(itemName)
     temp = client.send(RecommendItemsToItem(itemNameSanitised, None, 5, scenario='test', return_properties=True))
-    print(temp)
     return temp
 
 def recommendItemHomepage():
     result = client.send(RecommendItemsToUser('id', 15, return_properties=True))
     return result
-    print(temp)
+
+def userItemInteraction(user_id, item_id):
+    itemNameSanitised = sanitiseItemName(item_id)
+    client.send(AddDetailView(user_id, itemNameSanitised))
+
+def recommendUser(user_id):
+    #client.send(AddUser(user_id))
+    print(user_id)
+    user_id = str(user_id)
+    item = client.send(RecommendItemsToUser("9beRKaPEJySsCLfNRaIehqVJIme2", 1, return_properties=True))
+    return item
