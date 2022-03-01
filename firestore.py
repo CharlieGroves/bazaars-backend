@@ -176,6 +176,29 @@ def searchForItems(query):
     return (items)
 
 
+def searchForItemsAsc(query):
+    print(query)
+    items_ref = db.collection('items').where(
+        "tags", "array_contains_any", [query]).order_by("itemPrice", 
+         direction=firestore.Query.ASCENDING).limit(30)
+    items = []
+    all_items = items_ref.stream()
+    for item in all_items:
+        items.append(item.to_dict())
+    return (items)
+ 
+def searchForItemsDsc(query):
+    print(query)
+    items_ref = db.collection('items').where(
+        "tags", "array_contains_any", [query]).order_by("itemPrice", 
+        direction=firestore.Query.DESCENDING).limit(30)
+    items = []
+    all_items = items_ref.stream()
+    for item in all_items:
+        items.append(item.to_dict())
+    return (items)
+
+
 def createNewReview(ReviewTitle, ReviewText, ReviewRating, UserID, ProductID,):
     # reference to item reviews in database
     review_ref = db.collection('items').document(
@@ -304,8 +327,8 @@ def bestItem(shop_id):
     all_items = items_ref.get()
     for item in all_items:
         items.append(item.to_dict())
-    print(items[1])
-    return items[1]
+    print(items)
+    return items
 
 def worstItem(shop_id):
     items = []

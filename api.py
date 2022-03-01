@@ -11,7 +11,7 @@ from flask_cors import CORS
 import json
 
 # import my own functions from firestore.py
-from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems, createNewReview, getReviewsForItem, updateShoppingCart, getShoppingCart, get30Items , itemSale, bestItem, worstItem, itemPurchase, recommendShop
+from firestore import createUser, getAllShops, getShopWithName, getUser, getAllUsers, makeShop, getShopsWithId, createNewItem, getItems, getAllItems, getItem, searchForItems, createNewReview, getReviewsForItem, updateShoppingCart, getShoppingCart, get30Items , itemSale, bestItem, worstItem, itemPurchase, recommendShop, searchForItemsDsc, searchForItemsAsc
 from recombee_recommend import recommendItemHomepage, recommendItemItem, userItemInteraction, recommendUser
 
 
@@ -139,7 +139,7 @@ def getSingleItemRoute(item_id):
     return jsonify(item)
 
 
-@app.route('/get/search/item/<query>', methods=['GET'])
+@app.route('/get/search/item/relevent/<query>', methods=['GET'])
 # get items from the database based on whether they satisfy the query
 def searchForItemsRoute(query):
     data = searchForItems(query)
@@ -247,6 +247,18 @@ def itemPurchaseRoute(user_id, item_id, shop_id):
 def recommendShopRoute(shop_id, percentage):
     recommendShop(shop_id, percentage)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+@app.route('/get/search/item/asc/<query>', methods=['GET'])
+# get items from the database based on whether they satisfy the query in ascending order
+def searchForItemsAscRoute(query):
+    data = searchForItemsAsc(query)
+    return jsonify(data)
+ 
+@app.route('/get/search/item/dsc/<query>', methods=['GET'])
+# get items from the database based on whether they satisfy the query in descending order
+def searchForItemsDscRoute(query):
+    data = searchForItemsDsc(query)
+    return jsonify(data)
 
 # if file is file being run
 if __name__ == '__main__':
